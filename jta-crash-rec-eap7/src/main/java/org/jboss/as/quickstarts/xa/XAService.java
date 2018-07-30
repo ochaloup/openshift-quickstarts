@@ -17,6 +17,7 @@
 package org.jboss.as.quickstarts.xa;
 
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
@@ -75,7 +76,10 @@ public class XAService {
             connection.start();
             TextMessage message = session.createTextMessage();
             message.setText(msg);
+            int random = new Random().nextInt(1000) + 1;
+            message.setStringProperty("_AMQ_DUP_ID", "mojeidabychvedel " + random);
 
+            LOGGER.warning("Sending message with dup id: " + random);
             messageProducer.send(message);
             messageProducer.close();
         } finally {
