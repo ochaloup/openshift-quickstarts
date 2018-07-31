@@ -52,8 +52,8 @@ AT ENTRY
 # the VM will halt when the 2nd participant is asked to commit.
 # Note we alter the original behaviour to allow the first transaction to succeed,
 # this allows simpler verification of the recovery under OpenShift.
-IF TRUE
-DO traceln("Starting countdown at 5"), createCountDown("xahalt",5)
+IF createCountDown("xahalt",5)
+DO traceln("Starting countdown at 5")
 ENDRULE
  
 ########################################################################
@@ -71,7 +71,7 @@ jndiName:String = xares.getJndiName();
 # if the count down started at 2 and there are 2 XA resources then it should fire when the
 # second participant commits
 IF countDown("xahalt")
-DO traceln("***** topLevelCommit: Halting for an hour for " + jndiName), delay(3600000)
+DO traceln("***** topLevelCommit: Halting for an hour for " + jndiName + " of XARes " + xares), delay(3600000)
 ENDRULE
 
 ########################################################################
@@ -85,6 +85,7 @@ AT ENTRY
 BIND xares = $0;
 jndiName:String = xares.getJndiName();
 IF TRUE
-DO traceln("********* topLevelCommit for " + jndiName)
+DO
+  traceln("********* topLevelCommit for " + jndiName + " of XARes " + xares + ", countdown at " + getCountDown("xahalt"))
 ENDRULE
 
